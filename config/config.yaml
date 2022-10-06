@@ -1,0 +1,24 @@
+data:
+  url: https://archive.ics.uci.edu/ml/machine-learning-databases/00352/Online%20Retail.xlsx
+
+api:
+  baseUrl: https://api.getfestivo.com/v2/holidays
+  key: 07e0b4bcf6c4309323395e85064b39d0
+  year: '2021'
+
+snowflake-db:
+  account: scfksfz-zv27829
+  user: cluengo
+  password: Lj$o9j29cCtp
+  database: onlineRetail
+  schema: public
+  warehouse: COMPUTE_WH
+  table_name: TRANSACTIONS
+
+test:
+  extract: test/data/extract_test_dataset.xlsx
+  transform_national_holidays: test/data/transform_test_national.xlsx
+  transform_regional_holidays: test/data/transform_test_regional.xlsx
+  transform_exception_countries: test/data/transform_test_exc_countries.xlsx
+  load: test/data/load_test_dataset.xlsx
+  table_name: TESTTRANSACTIONS
