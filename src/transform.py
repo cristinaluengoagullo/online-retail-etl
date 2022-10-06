@@ -2,6 +2,7 @@ from utils.api import get_api_data
 from holidays import country_holidays
 from datetime import datetime as dt
 from config.config import conf
+from holidays import country_holidays
 import pycountry
 
 # Countries formatted incorrectly in the dataset and their ISO-alpha-2 codes
@@ -45,7 +46,9 @@ def transform_data(df):
                     if not holiday['subdivisions']:
                         parsed_holidays.add(dt.strptime(holiday['date'], "%Y-%m-%d").date())
                 holidays[country_id] = parsed_holidays
-            # The free api only allows previous year queries
+            # The free api only allows previous year queries. This is just a fix for demonstration
+            # purposes (all dates set to previous year). If we could use the correct year, we
+            # could just use date.date() without replacement
             date = date.replace(year=int(conf['api']['year'])).date()
             return date in holidays[country_id]
         else:
@@ -57,6 +60,44 @@ def transform_data(df):
     # Apply is_holiday to each row of the 2 column dataset. List comprehension faster than 'apply' method.
     df['IS_NATIONAL_HOLIDAY'] = [is_holiday(row) for row in df.loc[:, ['INVOICEDATE', 'COUNTRY']].values]
     return df
+
+
+# Alternative to transform_data without using the API (no year limitation).
+# Only for demonstration purposes in case we could not use the API
+def transform_data_alt(df):
+    countries_holidays = {}
+    countries_miss = set()
+
+    def is_holiday(row):
+        try:
+            date = row[0]
+            country = row[1]
+            country_code = pycountry.countries.get(name=country).alpha_2
+            country_id = country_code + str(date.year)
+            if not country_id in countries_holidays:
+                holidays = country_holidays(country_code, years=2021)
+                parsed_holidays = set()
+                for holiday_date, holiday_name in holidays.items():
+                    parsed_holidays.add(holiday_date)
+                countries_holidays[country_id] = parsed_holidays
+            date = date.replace(year=int(config['api']['year'])).date()
+            print(date)
+            return date in countries_holidays[country_id]
+
+        except AttributeError:
+            if country not in countries_miss:
+                print("No standard code for " + country)
+                countries_miss.add(country)
+            return False
+        except NotImplementedError as e:
+            print(e)
+            return False
+
+    df['is_national_holiday'] = [is_holiday(row) for row in df.loc[:, ['InvoiceDate', 'Country']].values]
+    print(countries_holidays)
+    #df['is_national_holiday'] = df.apply(lambda x: is_holiday(x['InvoiceDate'], x['Country']),axis=1)
+    return df
+
 
 # Clean data before loading to db
 def clean_data(df):
