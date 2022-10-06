@@ -55,7 +55,7 @@ def transform_data(df):
             return False
 
     # Apply is_holiday to each row of the 2 column dataset. List comprehension faster than 'apply' method.
-    df['is_national_holiday'] = [is_holiday(row) for row in df.loc[:, ['InvoiceDate', 'Country']].values]
+    df['IS_NATIONAL_HOLIDAY'] = [is_holiday(row) for row in df.loc[:, ['INVOICEDATE', 'COUNTRY']].values]
     return df
 
 # Clean data before loading to db

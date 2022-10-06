@@ -5,8 +5,6 @@ from src.transform import clean_data
 
 # Load data into snowflake
 def load_data(df, table_name):
-    # Formatting and cleaning for compatibility
-    df = clean_data(df)
     dbCon = connect(
         user = conf['snowflake-db']['user'],
         password = conf['snowflake-db']['password'],
