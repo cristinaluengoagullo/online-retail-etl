@@ -1,0 +1,6 @@
+
+Improvements:
+
+- Airflow implementation. Issue: dataframe state between tasks (maybe save it and extract on each task)
+- Docker to run etl
+- (*) Change list comprehension in 'transform_data' for vectorization
