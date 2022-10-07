@@ -1,5 +1,4 @@
 import requests
-from config.config import conf
 
 # Generic api request
 def get_api_data(url, params):
