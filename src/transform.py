@@ -43,7 +43,7 @@ def transform_data(df):
                 parsed_holidays = set()
                 for holiday in response['holidays']:
                     # Only national holidays
-                    if not holiday['subdivisions']:
+                    if holiday['public']:
                         parsed_holidays.add(dt.strptime(holiday['date'], "%Y-%m-%d").date())
                 holidays[country_id] = parsed_holidays
             # The free api only allows previous year queries. This is just a fix for demonstration
